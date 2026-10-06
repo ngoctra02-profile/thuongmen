@@ -1,0 +1,281 @@
+:root {
+    --burgundy: #590a16; /* Màu đỏ nhung sậm chuẩn giống file PDF */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: var(--burgundy);
+    /* Giả lập vân xước nhẹ của nền đỏ */
+    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 2px, transparent 2px, transparent 4px);
+    overflow-x: hidden;
+    height: 100vh;
+}
+
+.screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s;
+}
+
+.screen.active { opacity: 1; visibility: visible; z-index: 10; }
+
+/* --- MÀN 1 --- */
+#screen-gift {
+    display: flex; justify-content: center; align-items: center;
+    filter: blur(0px);
+    transition: filter 1.5s ease, opacity 1.5s ease, visibility 1.5s;
+    z-index: 60;
+}
+#screen-gift.active {
+    z-index: 60;
+}
+#screen-gift.fade-blur {
+    filter: blur(10px);  /* Chỉ nhòe và mờ, không phóng to gây chóng mặt */
+    opacity: 0;
+    visibility: hidden;
+    z-index: 60;
+}
+.gift-container {
+    text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center;
+}
+.aesthetic-envelope {
+    width: 350px; height: auto; animation: shakeGift 1.5s infinite; transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+}
+.aesthetic-envelope.hide {
+    transform: translateY(60px) scale(0.9); opacity: 0;
+}
+.foryou-text {
+    width: 180px; margin-top: 15px; transition: opacity 0.3s;
+}
+.heart-beat { animation: heartbeat 1s infinite; }
+
+@keyframes shakeGift {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(5deg); }
+    100% { transform: rotate(0deg); }
+}
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.15); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.15); }
+    70% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+/* --- MÀN 2: HOA BUNG --- */
+#screen-animation {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: transparent;
+    z-index: 50; overflow: hidden; pointer-events: none;
+    transform: translateY(0);
+    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.5s ease, visibility 1.5s;
+}
+#screen-animation.fall-down {
+    transform: translateY(100vh); /* Rơi tuột xuống dưới */
+    opacity: 0;
+    visibility: hidden;
+}
+.particle-flower {
+    position: absolute; transform: translate(-50%, -50%) scale(0); opacity: 0;
+    will-change: transform, opacity;
+}
+
+@keyframes burstOut {
+    0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+    15% { opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(var(--rot)) scale(1); opacity: 1; }
+}
+@keyframes dropDown {
+    0% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(var(--rot)) scale(1); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--tx)), 150vh) rotate(calc(var(--rot) + 180deg)) scale(0.8); opacity: 0; }
+}
+
+/* --- MÀN 3: SCRAPBOOK --- */
+.scrollable-screen {
+    display: block; overflow-y: auto; overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--burgundy); }
+::-webkit-scrollbar-thumb { background: #ffb3c1; border-radius: 4px; }
+
+#screen-letter {
+    background: #000; 
+    z-index: 100;
+    -webkit-overflow-scrolling: touch; /* Bắt buộc để vuốt cực mượt trên điện thoại (đặc biệt iOS) */
+    will-change: transform, opacity;
+}
+.scrapbook-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: block; /* Đổi từ flex sang block để ngăn mobile tự động ép cong hoặc thu nhỏ kích thước ảnh */
+}
+.scrapbook-wrapper img {
+    width: 100%;
+    height: auto; /* Tự động cao theo tỷ lệ gốc */
+    display: block;
+    margin: 0 auto;
+}
+#screen-letter.active {
+    animation: fadeInSlideUp 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+@keyframes fadeInSlideUp {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* HIỆU ỨNG HOA RƠI TỪ ĐẦU TRANG ĐẾN CUỐI TRANG */
+.falling-flower {
+    position: absolute;
+    top: -50px;
+    z-index: 100;
+    pointer-events: none;
+    animation: fall linear forwards;
+    will-change: top, transform, opacity; /* Tối ưu GPU khi số lượng hoa lớn */
+}
+
+@keyframes fall {
+    0% { top: -20px; transform: translateX(0px) rotate(-15deg); opacity: 0; }
+    2% { opacity: 0.9; }
+    20% { transform: translateX(40px) rotate(20deg); }
+    40% { transform: translateX(-30px) rotate(-15deg); }
+    60% { transform: translateX(20px) rotate(10deg); }
+    75% { top: calc(100% - var(--bottom-offset, 20px)); opacity: 1; transform: translateX(0px) rotate(0deg); } /* Chạm đáy trang, đứng thẳng đứng */
+    90% { top: calc(100% - var(--bottom-offset, 20px)); opacity: 1; transform: translateX(0px) rotate(0deg); } /* Đứng im thành hàng ngay ngắn */
+    100% { top: calc(100% - var(--bottom-offset, 20px)); transform: translateX(0px) rotate(0deg); opacity: 0; } /* Mờ dần */
+}
+
+/* HIỆU ỨNG MƯA HOA DÀY ĐẶC (TRANSITION) */
+.dense-flower {
+    position: fixed;
+    top: -15vh; /* Điểm neo cố định, tuyệt đối không animate top */
+    z-index: 9999; 
+    pointer-events: none;
+    will-change: transform, opacity; /* Ép chạy bằng GPU cực mượt */
+}
+
+/* Dùng translate3d(x, y, 0) để tạo chuyển động Y mượt mà nhất */
+@keyframes denseFall1 {
+    0% { transform: translate3d(0px, 0, 0) rotate(-10deg) scale(0.8); opacity: 0; }
+    10% { opacity: 1; }
+    20% { transform: translate3d(40px, 25vh, 0) rotate(15deg) scale(1); }
+    50% { transform: translate3d(-30px, 60vh, 0) rotate(-15deg) scale(1); }
+    80% { transform: translate3d(20px, 100vh, 0) rotate(10deg) scale(1.1); }
+    90% { opacity: 1; }
+    100% { transform: translate3d(-40px, 130vh, 0) rotate(-15deg) scale(1.2); opacity: 0; }
+}
+
+@keyframes denseFall2 {
+    0% { transform: translate3d(0px, 0, 0) rotate(15deg) scale(0.8); opacity: 0; }
+    10% { opacity: 1; }
+    25% { transform: translate3d(-50px, 30vh, 0) rotate(-10deg) scale(1); }
+    60% { transform: translate3d(30px, 75vh, 0) rotate(15deg) scale(1); }
+    85% { transform: translate3d(-15px, 105vh, 0) rotate(-15deg) scale(1.1); }
+    90% { opacity: 1; }
+    100% { transform: translate3d(40px, 130vh, 0) rotate(10deg) scale(1.2); opacity: 0; }
+}
+
+@keyframes denseFall3 {
+    0% { transform: translate3d(0px, 0, 0) rotate(-5deg) scale(0.8); opacity: 0; }
+    10% { opacity: 1; }
+    30% { transform: translate3d(25px, 35vh, 0) rotate(10deg) scale(1); }
+    70% { transform: translate3d(-35px, 85vh, 0) rotate(-10deg) scale(1); }
+    90% { opacity: 1; }
+    100% { transform: translate3d(15px, 130vh, 0) rotate(15deg) scale(1.2); opacity: 0; }
+}
+
+/* --- HIỆU ỨNG NHẮC NHỞ XOAY ĐIỆN THOẠI --- */
+#rotate-prompt {
+    display: none; /* Mặc định ẩn */
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(89, 10, 22, 0.95); /* Màu đỏ nhung sậm có độ mờ */
+    color: #ffb3c1;
+    z-index: 200; /* Hiển thị đè lên trên bức thư */
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 30px;
+    font-family: 'Quicksand', sans-serif;
+}
+#rotate-prompt h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+#rotate-prompt p {
+    font-size: 18px;
+    line-height: 1.5;
+}
+.rotate-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+    animation: rotatePhone 2s infinite ease-in-out;
+}
+@keyframes rotatePhone {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* --- RESPONSIVE CHO ĐIỆN THOẠI (Mobile) --- */
+@media screen and (max-width: 768px) {
+    /* Làm video vừa vặn hơn trên điện thoại nếu video là chiều ngang */
+    #first-video {
+        object-fit: cover;
+    }
+    
+    /* Mở khóa scroll ngang cho màn hình thư trên điện thoại */
+    #screen-letter {
+        overflow-x: auto !important;
+    }
+}
+
+/* Khi điện thoại đang CẦM DỌC (Portrait) */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    /* Hiện màn hình nhắc xoay ngang khi đã vào màn hình thư */
+    #screen-letter.active #rotate-prompt {
+        display: flex;
+        animation: fadeIn 1s forwards;
+    }
+    
+    /* Vẫn cho phép zoom ngang nếu họ cố tình không xoay */
+    .scrapbook-wrapper {
+        overflow-x: auto; 
+        -webkit-overflow-scrolling: touch;
+    }
+    .scrapbook-wrapper img {
+        width: 150%; 
+        min-width: 600px; 
+        max-width: none;
+        margin: 0; 
+    }
+}
+
+/* Khi điện thoại ĐÃ XOAY NGANG (Landscape) */
+@media screen and (max-width: 950px) and (orientation: landscape) {
+    /* Ẩn màn hình nhắc nhở đi */
+    #rotate-prompt {
+        display: none !important;
+    }
+    
+    /* Hình ảnh bức thư tự động ôm trọn viền màn hình (vì lúc này ngang điện thoại đã đủ rộng) */
+    .scrapbook-wrapper img {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: auto;
+    }
+}

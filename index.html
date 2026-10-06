@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bức thư 1 năm yêu em</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,600;1,600&family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- MÀN 1: Video Hộp quà chuyển động -->
+    <section id="screen-gift" class="screen active" onclick="openGift()" style="cursor: pointer;">
+        <video id="first-video" src="assets/intro-video.mp4" autoplay loop playsinline muted style="width: 100vw; height: 100vh; object-fit: cover; pointer-events: none;"></video>
+    </section>
+
+    <!-- MÀN 3: Scrapbook Cuộn (Bản Ảnh) -->
+    <section id="screen-letter" class="screen scrollable-screen">
+        
+        <!-- Yêu cầu xoay điện thoại trên Mobile (Portrait) -->
+        <div id="rotate-prompt">
+            <div class="rotate-icon">📱</div>
+            <h2>Khoan đã...</h2>
+            <p>Bạn hãy xoay ngang màn hình để xem món quà trọn vẹn và rõ nét nhất nhé 💖</p>
+        </div>
+
+        <div class="scrapbook-wrapper" style="position: relative; width: 100%; text-align: center; font-size: 0;">
+            <!-- Dùng thẻ img để tương thích 100% trên điện thoại, tự động tràn viền và scroll mượt -->
+            <img src="assets/thay_anh_k1.png" alt="Scrapbook Love Letter" style="width: 100%; display: block; margin: 0 auto; pointer-events: none;">
+        </div>
+    </section>
+
+    <!-- TRÌNH PHÁT NHẠC NỀN -->
+    <audio id="bg-music" src="assets/thay_nhac_khach1.mp3" loop></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
